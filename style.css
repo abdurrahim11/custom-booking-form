@@ -1,0 +1,30 @@
+#cbf-booking-form {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.cbf-form-group {
+    margin-bottom: 15px;
+}
+
+.cbf-form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.cbf-form-group input,
+.cbf-form-group select,
+.cbf-form-group textarea {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+}
+
+.cbf-form-group input[type="submit"] {
+    width: auto;
+    padding: 10px 20px;
+}
+
+#cbf-accept_conditions {
+    width: 10px;
+}
