@@ -35,8 +35,9 @@ function cbf_enqueue_scripts() {
                 'electricity_4amps' => get_post_meta($season->ID, 'cbf_electricity_4amps_rate', true),
                 'electricity_15amps' => get_post_meta($season->ID, 'cbf_electricity_15amps_rate', true),
                 'additional_tent' => get_post_meta($season->ID, 'cbf_additional_tent_rate', true),
-                'dog' => get_post_meta($season->ID, 'cbf_dog_rate', true)
-            )
+                'dog' => get_post_meta($season->ID, 'cbf_dog_rate', true),
+                'reservation_fee' => get_post_meta($season->ID, 'cbf_reservation_fee', true),
+            ),
         );
     }
 
@@ -117,7 +118,8 @@ function cbf_season_details_callback($post) {
         'cbf_electricity_4amps_rate' => 'Electricity 4 Amps Rate (€):',
         'cbf_electricity_15amps_rate' => 'Electricity 15 Amps Rate (€):',
         'cbf_additional_tent_rate' => 'Additional Tent Rate (€):',
-        'cbf_dog_rate' => 'Dog Rate (€):'
+        'cbf_dog_rate' => 'Dog Rate (€):',
+        'cbf_reservation_fee' => 'Reservation Fee Optional (€) :',
     ];
 
     foreach ($fields as $field => $label) {
@@ -153,7 +155,8 @@ function cbf_save_season_details($post_id) {
         'cbf_electricity_4amps_rate',
         'cbf_electricity_15amps_rate',
         'cbf_additional_tent_rate',
-        'cbf_dog_rate'
+        'cbf_dog_rate',
+        'cbf_reservation_fee',
     ];
 
     foreach ($fields as $field) {
@@ -172,3 +175,32 @@ function register_cbf_booking_form_widget( $widgets_manager ) {
     $widgets_manager->register( new \CBF_Booking_Form_Widget() );
 }
 add_action( 'elementor/widgets/register', 'register_cbf_booking_form_widget' );
+
+
+function enqueue_datepicker_assets() {
+    wp_enqueue_style('jquery-ui-datepicker');
+    wp_enqueue_script('jquery-ui-datepicker');
+    wp_add_inline_script('jquery-ui-datepicker', '
+         jQuery(function($) {
+            var currentDate = new Date();
+            var tomorrow = new Date();
+            tomorrow.setDate(currentDate.getDate() + 1);
+
+            $("#cbf-arrival_date").datepicker({
+                dateFormat: "yy-mm-dd",
+                minDate: currentDate,
+                onSelect: function(selectedDate) {
+                    var arrivalDate = new Date(selectedDate);
+                    arrivalDate.setDate(arrivalDate.getDate() + 1);
+                    $("#cbf-departure_date").datepicker("option", "minDate", arrivalDate);
+                }
+            }).datepicker("setDate", currentDate);
+
+            $("#cbf-departure_date").datepicker({
+                dateFormat: "yy-mm-dd",
+                minDate: tomorrow
+            }).datepicker("setDate", tomorrow);
+        });
+    ');
+}
+add_action('wp_enqueue_scripts', 'enqueue_datepicker_assets');

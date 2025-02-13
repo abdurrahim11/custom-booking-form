@@ -16,12 +16,13 @@ jQuery(document).ready(function($) {
             return;
         }
 
+        var reservation_fee = 0;
         let totalRate = 0;
         let currentDate = new Date(arrivalDate);
 
         while (currentDate <= departureDate) {
             const season = seasons.find(season => currentDate >= season.startDate && currentDate <= season.endDate);
-
+            console.log(season);
             if (season) {
                 totalRate += season.rates.adults * parseInt($('#cbf-adults').val() || 0);
                 totalRate += season.rates.children_2_7 * parseInt($('#cbf-children_2_7').val() || 0);
@@ -31,6 +32,8 @@ jQuery(document).ready(function($) {
                 totalRate += season.rates.electricity_15amps * (parseInt($('#cbf-electricity').val() === '15' ? 1 : 0));
                 totalRate += season.rates.additional_tent * parseInt($('#cbf-additional_tents').val() || 0);
                 totalRate += season.rates.dog * (parseInt($('#cbf-dogs').val() === 'yes' ? 1 : 0));
+                console.log(season.rates.reservation_fee);
+                reservation_fee = season.rates.reservation_fee;
             }
 
             currentDate.setDate(currentDate.getDate() + 1);
@@ -38,7 +41,9 @@ jQuery(document).ready(function($) {
 
         console.log( totalRate );
         const depositAmount = totalRate * 0.25; // 25% deposit
-        $('#cbf-deposit').val(depositAmount.toFixed(2));
+        console.log( 'DEPOSIT' + depositAmount  );
+        const total = depositAmount + parseInt( reservation_fee );
+        $('#cbf-deposit').val(total.toFixed(2));
     }
 
     $('#cbf-calculate').on('click', calculateDeposit);
