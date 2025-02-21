@@ -28,3 +28,19 @@
 #cbf-accept_conditions {
     width: 10px;
 }
+
+
+button#cbf-reserve {
+    position: relative;
+}
+
+.cbf-form-group button {
+    height: 41px;
+    width: 88px;
+}
+
+button#cbf-reserve span {
+    position: absolute;
+    left: 29%;
+    top: 0;
+}
